@@ -1,0 +1,181 @@
+Multi-Agent Research Assistant
+
+An autonomous AI research pipeline that searches the web, scrapes pages,
+stores findings in a vector database, and writes a structured research
+report from a single topic input. Built entirely with free tools.
+
+
+WHAT IT DOES
+
+Type any research topic and the system automatically:
+- Searches the web using DuckDuckGo
+- Scrapes and summarizes the top 3 result pages
+- Stores all findings in a ChromaDB vector database
+- Retrieves the most relevant chunks semantically
+- Writes a full structured research report using LLaMA 3
+
+
+ARCHITECTURE
+
+User Input
+    ↓
+Search Agent    →  DuckDuckGo search  →  LLaMA 3 summarization
+    ↓
+Scraper Agent   →  Visit top 3 URLs  →  BeautifulSoup  →  summarization
+    ↓
+ChromaDB Store  →  HuggingFace embeddings  →  vector storage
+    ↓
+Writer Agent    →  Retrieve top 5 chunks  →  LLaMA 3 70B  →  report
+    ↓
+Streamlit UI    →  Render report
+
+
+TECH STACK
+
+LangGraph      - Multi-agent orchestration with stateful graph
+LangChain      - Agent and tool abstractions
+Groq API       - Free LLaMA 3.3 70B inference
+ChromaDB       - Local vector store for semantic memory
+HuggingFace    - all-MiniLM-L6-v2 embeddings, free and local
+DuckDuckGo     - Free web search, no API key needed
+BeautifulSoup4 - Web scraping and HTML parsing
+Streamlit      - Interactive web UI
+Python Dotenv  - Environment variable management
+
+
+SETUP AND INSTALLATION
+
+Prerequisites
+- Python 3.10 or above
+- Free Groq API key from https://console.groq.com
+
+Step 1 - Clone the repository
+    git clone https://github.com/yourusername/research-assistant.git
+    cd research-assistant
+
+Step 2 - Create virtual environment
+    Windows:
+        python -m venv venv
+        venv\Scripts\activate
+    Mac and Linux:
+        python -m venv venv
+        source venv/bin/activate
+
+Step 3 - Install dependencies
+    pip install -r requirements.txt
+
+Step 4 - Add your Groq API key
+    Create a .env file in the root folder and add:
+    GROQ_API_KEY=groq_api_key
+
+Step 5 - Run the app
+    streamlit run main.py
+    Open your browser at http://localhost:8501
+
+
+CONFIGURATION
+
+All settings are centralized in config.py. Change any value once
+and it updates across the entire project automatically.
+
+    SEARCH_MODEL = "llama-3.3-70b-versatile"
+    WRITER_MODEL = "llama-3.3-70b-versatile"
+    MAX_SEARCH_RESULTS = 3
+    CHROMA_DIR = "./chroma_db"
+    EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+    DEVICE = "cpu"
+    LOG_LEVEL = "INFO"
+
+
+LOGGING
+
+Every agent logs its activity with timestamps to the terminal so you
+can see exactly which step is running and how long it takes.
+
+    search_agent  - INFO - Searching for: Quantum computing
+    search_agent  - INFO - Search complete
+    scraper_agent - INFO - Scraping: https://example.com
+    scraper_agent - WARNING - Empty content from https://blocked.com
+    vector_store  - INFO - Stored 2 docs in ChromaDB
+    writer_agent  - INFO - Writing final report
+    writer_agent  - INFO - Report complete
+
+
+REPORT STRUCTURE
+
+Every generated report follows this structure:
+
+    1. Executive Summary
+    2. Background and Context
+    3. Key Findings
+    4. Analysis and Insights
+    5. Conclusions and Recommendations
+
+
+ERRORS FIXED DURING DEVELOPMENT
+
+These are real production errors encountered and resolved:
+
+    ModuleNotFoundError langchain.schema
+    Cause - LangChain moved modules in newer versions
+    Fix   - Changed to langchain_core.messages
+
+    ImportError AgentExecutor
+    Cause - AgentExecutor deprecated in new LangChain
+    Fix   - Rewrote search agent as a plain function
+
+    groq.BadRequestError model decommissioned
+    Cause - Groq retired llama3-8b-8192
+    Fix   - Updated to llama-3.3-70b-versatile
+
+    ValueError Expected Embeddings non-empty
+    Cause - Empty scraped pages sent to ChromaDB
+    Fix   - Added content filter before storing
+
+    StreamlitDuplicateElementId
+    Cause - Old code still present in main.py
+    Fix   - Cleared file and added unique key
+
+
+KEY CONCEPTS
+
+LangGraph StateGraph
+Every agent shares a ResearchState dictionary. Each agent reads from
+it and writes back to it as it completes its job.
+
+RAG - Retrieval Augmented Generation
+Scraped content is embedded and stored in ChromaDB. The writer agent
+retrieves the most relevant chunks before writing the report.
+
+Multi-Agent Pipeline
+Instead of one LLM doing everything, specialized agents collaborate
+with each doing one job they are best at.
+
+Centralized Config
+All model names and settings live in config.py. When Groq
+decommissioned llama3-8b-8192, only one line needed changing.
+
+Production Logging
+Every agent logs what it is doing with timestamps so you can trace
+exactly which step is slow or failing.
+
+
+FUTURE IMPROVEMENTS
+
+- Planner agent to break topics into subtopics
+- Fact checker agent to verify key claims
+- PDF and DOCX export of reports
+- Conversation memory for follow-up questions
+- FastAPI backend REST API
+- Streaming output token by token
+- Docker containerization
+- Unit tests for all agents
+- React frontend
+
+AUTHOR
+
+Your Name
+GitHub   - https://github.com/MeghanaPatnam
+LinkedIn - https://www.linkedin.com/in/meghana-patnam-a7b07b1b1/
+
+Built with LangGraph, LangChain, Groq, ChromaDB, HuggingFace, and Streamlit.
