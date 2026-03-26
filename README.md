@@ -124,17 +124,10 @@ These are real production errors encountered and resolved:
     Cause - AgentExecutor deprecated in new LangChain
     Fix   - Rewrote search agent as a plain function
 
-    groq.BadRequestError model decommissioned
-    Cause - Groq retired llama3-8b-8192
-    Fix   - Updated to llama-3.3-70b-versatile
-
     ValueError Expected Embeddings non-empty
     Cause - Empty scraped pages sent to ChromaDB
     Fix   - Added content filter before storing
 
-    StreamlitDuplicateElementId
-    Cause - Old code still present in main.py
-    Fix   - Cleared file and added unique key
 
 
 KEY CONCEPTS
@@ -172,7 +165,7 @@ FUTURE IMPROVEMENTS
 - Unit tests for all agents
 - React frontend
 
-AUTHOR
+
 Meghana Patnam
 GitHub   - https://github.com/MeghanaPatnam
 LinkedIn - https://www.linkedin.com/in/meghana-patnam-a7b07b1b1/
